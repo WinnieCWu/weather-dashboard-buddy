@@ -228,3 +228,31 @@ function fetchWeather(location) {
         console.error(err);
       });
   }
+
+  function handleSearchFormSubmit(e) {
+    // Don't continue if there is nothing in the search form
+    if (!searchInput.value) {
+      return;
+    }
+  
+    e.preventDefault();
+    var search = searchInput.value.trim();
+    fetchCoords(search);
+    searchInput.value = '';
+  }
+  
+  function handleSearchHistoryClick(e) {
+    // Don't do search if current elements is not a search history button
+    if (!e.target.matches('.btn-history')) {
+      return;
+    }
+  
+    var btn = e.target;
+    var search = btn.getAttribute('data-search');
+    fetchCoords(search);
+  }
+  
+  initSearchHistory();
+  searchForm.addEventListener('submit', handleSearchFormSubmit);
+  searchHistoryContainer.addEventListener('click', handleSearchHistoryClick);
+  
