@@ -158,3 +158,73 @@ function renderForecastCard(forecast, timezone) {
   forecastContainer.append(col);
 }
 
+// Function to display 5 day forecast.
+function renderForecast(dailyForecast, timezone) {
+    // Create unix timestamps for start and end of 5 day forecast
+    var startDt = dayjs().tz(timezone).add(1, 'day').startOf('day').unix();
+    var endDt = dayjs().tz(timezone).add(6, 'day').startOf('day').unix();
+  
+    var headingCol = document.createElement('div');
+    var heading = document.createElement('h4');
+  
+    headingCol.setAttribute('class', 'col-12');
+    heading.textContent = '5-Day Forecast:';
+    headingCol.append(heading);
+  
+    forecastContainer.innerHTML = '';
+    forecastContainer.append(headingCol);
+    for (var i = 0; i < dailyForecast.length; i++) {
+      // The api returns forecast data which may include 12pm on the same day and
+      // always includes the next 7 days. The api documentation does not provide
+      // information on the behavior for including the same day. Results may have
+      // 7 or 8 items.
+      if (dailyForecast[i].dt >= startDt && dailyForecast[i].dt < endDt) {
+        renderForecastCard(dailyForecast[i], timezone);
+      }
+    }
+  }
+  
+  function renderItems(city, data) {
+    renderCurrentWeather(city, data.current, data.timezone);
+    renderForecast(data.daily, data.timezone);
+  }
+
+  // Fetches weather data for given location from the Weather Geolocation
+// endpoint; then, calls functions to display current and forecast weather data.
+function fetchWeather(location) {
+    var { lat } = location;
+    var { lon } = location;
+    var city = location.name;
+    var apiUrl = `${weatherApiRootUrl}/data/2.5/onecall?lat=${lat}&lon=${lon}&units=imperial&exclude=minutely,hourly&appid=${weatherApiKey}`;
+  
+    fetch(apiUrl)
+      .then(function (res) {
+        return res.json();
+      })
+      .then(function (data) {
+        renderItems(city, data);
+      })
+      .catch(function (err) {
+        console.error(err);
+      });
+  }
+  
+  function fetchCoords(search) {
+    var apiUrl = `${weatherApiRootUrl}/geo/1.0/direct?q=${search}&limit=5&appid=${weatherApiKey}`;
+  
+    fetch(apiUrl)
+      .then(function (res) {
+        return res.json();
+      })
+      .then(function (data) {
+        if (!data[0]) {
+          alert('Location not found');
+        } else {
+          appendToHistory(search);
+          fetchWeather(data[0]);
+        }
+      })
+      .catch(function (err) {
+        console.error(err);
+      });
+  }
