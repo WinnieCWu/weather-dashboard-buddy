@@ -7,6 +7,7 @@ Weather Dashboard Buddy is an app that runs in the broswer and uses the OpenWeat
 This app features dynamically updated HTML and CSS through JavaScript. Additionally, it uses OpenWeather API to retrieve weather data and local storage to store persistent data, such as recently searched city names.
 
 ## What it Looks Like
+![screenshot](https://user-images.githubusercontent.com/95206117/171937318-6e8d2c72-854e-42eb-9be7-479ea1a412cf.JPG)
 
 ## Link
 Feel free to use the app to see weather conditions near you at https://winniecwu.github.io/weather-dashboard-buddy/. Thank you!
